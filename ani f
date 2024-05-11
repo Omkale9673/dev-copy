@@ -1,0 +1,140 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: SplashScreen(),
+    );
+  }
+}
+
+class SplashScreen extends StatefulWidget {
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  AnimationController _animationController;
+  Animation<double> _fadeInAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _animationController =
+        AnimationController(vsync: this, duration: Duration(seconds: 5)); // Change the duration here
+    _fadeInAnimation =
+        Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
+
+    _animationController.forward();
+
+    _animationController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        // Navigate to your login page or next screen
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+        );
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Center(
+        child: FadeTransition(
+          opacity: _fadeInAnimation,
+          child: TypewriterTextAnimation(),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+}
+
+class LoginPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Login'),
+      ),
+      body: Center(
+        child: Text('Your Login Page'),
+      ),
+    );
+  }
+}
+
+class TypewriterTextAnimation extends StatefulWidget {
+  @override
+  _TypewriterTextAnimationState createState() =>
+      _TypewriterTextAnimationState();
+}
+
+class _TypewriterTextAnimationState extends State<TypewriterTextAnimation>
+    with SingleTickerProviderStateMixin {
+  AnimationController _controller;
+  Animation<int> _textAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller =
+        AnimationController(vsync: this, duration: Duration(seconds: 3));
+    _textAnimation = IntTween(begin: 0, end: 5).animate(_controller)
+      ..addListener(() {
+        setState(() {});
+      });
+
+    _controller.forward();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text(
+          'EV'.substring(0, _textAnimation.value),
+          style: TextStyle(
+            fontFamily: 'TitilliumWeb',
+            color: Colors.white,
+            fontSize: 48.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(width: 20),
+        Text(
+          'BRISK',
+          style: TextStyle(
+            fontFamily: 'TitilliumWeb',
+            color: Colors.white,
+            fontSize: 48.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+}
