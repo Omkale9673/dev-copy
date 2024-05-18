@@ -24,6 +24,7 @@ class NetworkService {
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
+      print('Failed to load vehicle dashboard data: ${response.body}');
       throw Exception('Failed to load vehicle dashboard data');
     }
   }
