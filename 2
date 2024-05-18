@@ -1,269 +1,30 @@
-import 'dart:typed_data';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-class EditProfileModel {
-  FFUploadedFile? uploadedLocalFile1;
+class NetworkService {
+  final String baseUrl;
+  final String session;
 
-  bool isDataUploading1 = false;
-  void dispose() {}
-}
+  NetworkService({required this.baseUrl, required this.session});
 
-class FFUploadedFile {
-  final String name;
-  final Uint8List? bytes;
-  final double? height;
-  final double? width;
-  final String? blurHash;
+  Future<Map<String, dynamic>> getVehicleDashboard(String vin) async {
+    final url = Uri.parse('$baseUrl/vehicle_dashboard');
 
-  FFUploadedFile({
-    required this.name,
-    required this.bytes,
-    this.height,
-    this.width,
-    this.blurHash,
-  });
-}
-
-class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({Key? key}) : super(key: key);
-
-  @override
-  _EditProfilePageState createState() => _EditProfilePageState();
-}
-
-class _EditProfilePageState extends State<EditProfilePage> {
-  late EditProfileModel _model;
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  XFile? _aadharCardImage;
-  XFile? _panCardImage;
-  XFile? _drivingLicenceImage;
-
-  @override
-  void initState() {
-    super.initState();
-    _model = EditProfileModel();
-  }
-
-  @override
-  void dispose() {
-    _model.dispose();
-    super.dispose();
-  }
-
-  Future<void> _pickImage(ImageSource source, String document) async {
-    XFile? pickedImage = await ImagePicker().pickImage(source: source);
-    setState(() {
-      if (document == 'aadhar') {
-        _aadharCardImage = pickedImage;
-      } else if (document == 'pan') {
-        _panCardImage = pickedImage;
-      } else if (document == 'driving') {
-        _drivingLicenceImage = pickedImage;
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size; // Getting the size of the screen
-    final double topPadding = size.height * 0.1;
-    final double sidePadding = size.width * 0.05;
-
-    return Scaffold(
-      key: scaffoldKey,
-      body: Stack(
-        children: [
-          Align(
-            alignment: const AlignmentDirectional(-2, -1.03),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.asset(
-                'assets/images/Group.png',
-                width: size.width * 0.8, // 80% of screen width
-                height: size.height * 0.3, // 30% of screen height
-                fit: BoxFit.contain,
-              ),
-            ),
-          ),
-          const Align(
-            alignment: AlignmentDirectional(-0.6, -0.83),
-            child: Text(
-              'Edit Profile',
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-                fontFamily: 'Montserrat',
-              ),
-            ),
-          ),
-          Align(
-            alignment: const AlignmentDirectional(-0.9, -0.85),
-            child: IconButton(
-              icon: const Icon(
-                Icons.arrow_back_ios,
-                color: Colors.white,
-                size: 24,
-              ),
-              onPressed: () {
-                Navigator.of(context)
-                    .pop(); // Allows returning to the previous screen
-              },
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-                sidePadding, topPadding + 150, sidePadding, 10),
-            child: TextField(
-              keyboardType: TextInputType.name,
-              decoration: const InputDecoration(
-                labelText: 'Name',
-                border: OutlineInputBorder(),
-              ),
-              onChanged: (value) {},
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-                sidePadding, topPadding + 230, sidePadding, 10),
-            child: TextField(
-              keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
-              ),
-              onChanged: (value) {},
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-                sidePadding, topPadding + 310, sidePadding, 10),
-            child: TextField(
-              keyboardType: TextInputType.phone,
-              decoration: const InputDecoration(
-                labelText: 'Mobile Number',
-                border: OutlineInputBorder(),
-              ),
-              onChanged: (value) {},
-            ),
-          ),
-          Positioned(
-            left: sidePadding,
-            top: topPadding + 400,
-            child: const Text(
-              'Manage Document',
-              style: TextStyle(
-                fontFamily: 'Montserrat',
-                color: Colors.black,
-                fontSize: 19,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-          Positioned(
-            left: sidePadding + 15,
-            top: topPadding + 450,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Aadhar Card',
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: 18,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                SizedBox(height: 10),
-                GestureDetector(
-                  onTap: () => _pickImage(ImageSource.gallery, 'aadhar'),
-                  child: _aadharCardImage == null
-                      ? Icon(
-                          Icons.add_circle_outline,
-                          color:
-                              Theme.of(context).textTheme.bodyLarge?.color,
-                          size: 40,
-                        )
-                      : Image.file(
-                          File(_aadharCardImage!.path),
-                          height: 40.0,
-                          width: 40.0,
-                        ),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            left: sidePadding + 15,
-            top: topPadding + 540,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Pan Card',
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: 18,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                SizedBox(height: 10),
-                GestureDetector(
-                  onTap: () => _pickImage(ImageSource.gallery, 'pan'),
-                  child: _panCardImage == null
-                      ? Icon(
-                          Icons.add_circle_outline,
-                          color:
-                              Theme.of(context).textTheme.bodyLarge?.color,
-                          size: 40,
-                        )
-                      : Image.file(
-                          File(_panCardImage!.path),
-                          height: 40.0,
-                          width: 40.0,
-                        ),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            left: sidePadding + 15,
-            top: topPadding + 630,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Driving Licence',
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: 18,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                SizedBox(height: 10),
-                GestureDetector(
-                  onTap: () => _pickImage(ImageSource.gallery, 'driving'),
-                  child: _drivingLicenceImage == null
-                      ? Icon(
-                          Icons.add_circle_outline,
-                          color:
-                              Theme.of(context).textTheme.bodyLarge?.color,
-                          size: 40,
-                        )
-                      : Image.file(
-                          File(_drivingLicenceImage!.path),
-                          height: 40.0,
-                          width: 40.0,
-                        ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $session',
+      },
+      body: json.encode({
+        "VIN": vin,
+      }),
     );
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Failed to load vehicle dashboard data');
+    }
   }
 }
