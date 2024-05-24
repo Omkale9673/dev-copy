@@ -1,168 +1,12 @@
 import 'package:bike/profile_page.dart';
 import 'package:bike/support.dart';
 import 'package:flutter/material.dart';
-import 'network_service.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  late NetworkService networkService;
-  String batteryPercentage = 'Loading...';
-
-  @override
-  void initState() {
-    super.initState();
-    networkService = NetworkService(
-        baseUrl:
-            'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
-        session: 'your-session-token');
-    fetchBatteryPercentage();
-  }
-
-  Future<void> fetchBatteryPercentage() async {
-    try {
-      var dashboardData =
-          await networkService.getVehicleDashboard('brk123456789');
-      setState(() {
-        batteryPercentage = '${dashboardData['Battery %']}%';
-      });
-    } catch (e) {
-      setState(() {
-        batteryPercentage = 'Error fetching data';
-      });
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(176, 0, 0, 0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.asset(
-                    'assets/images/image_bike.png',
-                    width: 420,
-                    height: 1000,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              top: 490,
-              left: 0,
-              right: 10,
-              child: Align(
-                alignment: Alignment.center,
-                child: Transform.rotate(
-                  angle: -90 *
-                      (3.1415926535897932 / 180), // Convert degrees to radians
-                  child: const Text(
-                    'Origin',
-                    style: TextStyle(
-                      fontFamily: 'Prompt',
-                      fontSize: 77,
-                      letterSpacing: 0,
-                      color: Color(0x532D2A2A),
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Align(
-              alignment: const AlignmentDirectional(-1, 0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.asset(
-                  'assets/images/Mainside.png',
-                  width: 162,
-                  height: 1000,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            Align(
-              alignment: const AlignmentDirectional(-1, 0),
-              child: Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 0, 40),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.asset(
-                    'assets/images/Ellipseh.png',
-                    width: 128,
-                    height: 128,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ),
-            ),
-            Align(
-              alignment: const AlignmentDirectional(-1, 0),
-              child: Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(25, 0, 0, 40),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.asset(
-                    'assets/images/Ellipseho.png',
-                    width: 111,
-                    height: 111,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ),
-            ),
-            Align(
-              alignment: const AlignmentDirectional(-1, 0),
-              child: Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(34, 0, 0, 40),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.asset(
-                    'assets/images/Ellipsehom.png',
-                    width: 91,
-                    height: 91,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              top: 20,
-              left: 20,
-              child: Text(
-                'Battery: $batteryPercentage',
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class MyHome extends StatelessWidget {
-  const MyHome({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size;
-
     return Scaffold(
       drawer: Drawer(
         child: ListView(
@@ -171,12 +15,12 @@ class MyHome extends StatelessWidget {
             Stack(
               children: [
                 Positioned(
-                  left: -screenSize.width * 0.12,
-                  top: -screenSize.height * 0,
+                  left: -MediaQuery.of(context).size.width * 0.12,
+                  top: -MediaQuery.of(context).size.height * 0,
                   child: Image.asset(
                     'assets/images/Group.png',
-                    width: screenSize.width * 0.8,
-                    height: screenSize.height * 0.3,
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    height: MediaQuery.of(context).size.height * 0.3,
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -215,9 +59,7 @@ class MyHome extends StatelessWidget {
               child: ListTile(
                 leading: const Icon(Icons.settings),
                 title: const Text('Service'),
-                onTap: () {
-                  // Implement action for Service
-                },
+                onTap: () {},
               ),
             ),
             Padding(
@@ -225,9 +67,7 @@ class MyHome extends StatelessWidget {
               child: ListTile(
                 leading: const Icon(Icons.directions_bike),
                 title: const Text('Bike Details'),
-                onTap: () {
-                  // Implement action for Bike Details
-                },
+                onTap: () {},
               ),
             ),
             Padding(
@@ -235,9 +75,7 @@ class MyHome extends StatelessWidget {
               child: ListTile(
                 leading: const Icon(Icons.location_on_outlined),
                 title: const Text('Ride History'),
-                onTap: () {
-                  // Implement action for Ride History
-                },
+                onTap: () {},
               ),
             ),
             Padding(
@@ -245,9 +83,7 @@ class MyHome extends StatelessWidget {
               child: ListTile(
                 leading: const Icon(Icons.book_outlined),
                 title: const Text('Manuals'),
-                onTap: () {
-                  // Implement action for Manuals
-                },
+                onTap: () {},
               ),
             ),
             Padding(
@@ -264,59 +100,249 @@ class MyHome extends StatelessWidget {
                 },
               ),
             ),
-            // Add more Padding widgets with ListTile children for additional items
+            Padding(
+              padding: const EdgeInsets.only(
+                  top: 150.0), // Add only bottom padding here
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: GestureDetector(
+                  onTap: () {},
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: Colors.black, // Border color
+                        width: 2,
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.home_outlined,
+                      size: 35,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
-      body: const HomePage(),
+      body: const MyHomePage(),
       floatingActionButton: Builder(
         builder: (BuildContext context) {
-          return Padding(
-            padding: const EdgeInsets.only(top: 150.0),
-            child: FloatingActionButton(
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-              shape: const CircleBorder(
-                side: BorderSide(
-                  color: Color.fromARGB(255, 183, 195, 255),
-                  width: 1.5,
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 120.0, left: 12.0),
+                child: GestureDetector(
+                  onTap: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: Colors.white, // Border color
+                        width: 1,
+                      ),
+                    ),
+                    child: const RotationTransition(
+                      turns: AlwaysStoppedAnimation(
+                          1), // Adjust the value to control the rotation
+                      child: Icon(
+                        Icons.more_horiz_outlined,
+                        size: 40,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
                 ),
               ),
-              backgroundColor: Colors.blue,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    width: 7.0,
-                    height: 7.0,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
+              Padding(
+                padding: const EdgeInsets.only(
+                    top: 30.0, left: 12.0), // Adjusted top padding
+                child: GestureDetector(
+                  onTap: () {
+                    // Handle notification icon tap
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: Colors.white, // Border color
+                        width: 1,
+                      ),
+                    ),
+                    child: const RotationTransition(
+                      turns: AlwaysStoppedAnimation(
+                          1), // Adjust the value to control the rotation
+                      child: Icon(
+                        Icons.notifications_none,
+                        size: 40,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
-                  Container(
-                    width: 7.0,
-                    height: 7.0,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Container(
-                    width: 7.0,
-                    height: 7.0,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
+            ],
           );
         },
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
     );
+  }
+}
+
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(176, 0, 0, 0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset(
+                    'assets/images/image_bike.png',
+                    width: 420,
+                    height: 1000,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 560,
+              left: 0,
+              right: 10,
+              child: Align(
+                alignment: Alignment.center,
+                child: Transform.rotate(
+                  angle: -90 * (3.1415926535897932 / 180),
+                  child: const Text(
+                    'Origin',
+                    style: TextStyle(
+                      fontFamily: 'Prompt',
+                      fontSize: 77,
+                      letterSpacing: 0,
+                      color: Color(0x532D2A2A),
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Align(
+              alignment: const AlignmentDirectional(-1, 0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.asset(
+                  'assets/images/Mainside.png',
+                  width: 162,
+                  height: 1000,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Align(
+              alignment: const AlignmentDirectional(-1, 0),
+              child: Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(34, 0, 0, 40),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset(
+                    'assets/images/Ellipsehom.png',
+                    width: 91,
+                    height: 91,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+            ),
+            const Align(
+              alignment: Alignment.bottomCenter,
+              child:
+                  AnimatedCircularWave(), // Add the animated circular wave here
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class AnimatedCircularWave extends StatefulWidget {
+  const AnimatedCircularWave({Key? key}) : super(key: key);
+
+  @override
+  _AnimatedCircularWaveState createState() => _AnimatedCircularWaveState();
+}
+
+class _AnimatedCircularWaveState extends State<AnimatedCircularWave>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat();
+    _animation = Tween<double>(begin: 0, end: 1).animate(_controller);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        return CustomPaint(
+          painter: CircularWavePainter(_animation.value),
+          child: const SizedBox(
+            width: 300,
+            height: 410,
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+}
+
+class CircularWavePainter extends CustomPainter {
+  final double animationValue;
+
+  CircularWavePainter(this.animationValue);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 6, size.height / 80);
+    final maxRadius = size.width / 4;
+    final paint = Paint()
+      ..color = const Color.fromARGB(255, 255, 255, 255).withOpacity(0.2);
+
+    const circlesCount = 5;
+    for (int i = 0; i < circlesCount; i++) {
+      final radius = maxRadius * animationValue * (1 - i / circlesCount);
+      canvas.drawCircle(center, radius, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
   }
 }
