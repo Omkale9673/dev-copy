@@ -1,0 +1,92 @@
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Vehicle Dashboard',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: VehicleDashboardScreen(),
+    );
+  }
+}
+
+class VehicleDashboardScreen extends StatefulWidget {
+  @override
+  _VehicleDashboardScreenState createState() => _VehicleDashboardScreenState();
+}
+
+class _VehicleDashboardScreenState extends State<VehicleDashboardScreen> {
+  Map<String, dynamic> vehicleData = {}; // Provide a default initialization
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchVehicleDashboard();
+  }
+
+  Future<void> fetchVehicleDashboard() async {
+    final url = 'http://34.93.202.185:5000/api/v1/get_vehicle_dashboard?vehicle_id=brk123456789&session=brk129';
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        setState(() {
+          vehicleData = json.decode(response.body);
+          isLoading = false;
+        });
+      } else {
+        // Handle the error
+        setState(() {
+          isLoading = false;
+        });
+        print('Failed to load vehicle dashboard');
+      }
+    } catch (e) {
+      // Handle the exception
+      setState(() {
+        isLoading = false;
+      });
+      print('Failed to load vehicle dashboard: $e');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Vehicle Dashboard'),
+      ),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : vehicleData.isEmpty
+              ? Center(child: Text('Failed to load vehicle data'))
+              : Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Battery %: ${vehicleData['Battery %']}'),
+                      Text('Battery Charge Status: ${vehicleData['Battery Charge Status']}'),
+                      Text('Distance to Empty: ${vehicleData['Distance to empty']}'),
+                      Text('Head Light On/Off: ${vehicleData['Head light on/off']}'),
+                      Text('Side Stand: ${vehicleData['Side Stand']}'),
+                      Text('Speed: ${vehicleData['Speed']}'),
+                      Text('Total KMS: ${vehicleData['Total KMS']}'),
+                      Text('Travel Direction: ${vehicleData['Travel Direction']}'),
+                      Text('Trip A: ${vehicleData['Trip A']}'),
+                      Text('Trip B: ${vehicleData['Trip B']}'),
+                    ],
+                  ),
+                ),
+    );
+  }
+}
