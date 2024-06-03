@@ -1,0 +1,110 @@
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Vehicle Dashboard',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: VehicleDashboardScreen(),
+    );
+  }
+}
+
+class VehicleDashboardScreen extends StatefulWidget {
+  @override
+  _VehicleDashboardScreenState createState() => _VehicleDashboardScreenState();
+}
+
+class _VehicleDashboardScreenState extends State<VehicleDashboardScreen> {
+  Map<String, dynamic> vehicleData = {}; // Provide a default initialization
+  bool isLoading = true;
+  String errorMessage = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchVehicleDashboard();
+  }
+
+  Future<void> fetchVehicleDashboard() async {
+    final url = 'http://34.93.202.185:5000/api/v1/get_vehicle_dashboard?vehicle_id=brk123456789&session=brk129';
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        setState(() {
+          vehicleData = data['data']; // Assuming 'data' is the key for the vehicle data
+          isLoading = false;
+        });
+        print('Vehicle data: $vehicleData'); // Debugging: Print the API response
+      } else {
+        setState(() {
+          isLoading = false;
+          errorMessage = 'Failed to load vehicle dashboard: ${response.statusCode}';
+        });
+        print(errorMessage);
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+        errorMessage = 'Failed to load vehicle dashboard: $e';
+      });
+      print(errorMessage);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Vehicle Dashboard'),
+      ),
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : errorMessage.isNotEmpty
+              ? Center(child: Text(errorMessage))
+              : vehicleData.isEmpty
+                  ? Center(child: Text('No data available'))
+                  : Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: ListView(
+                        children: [
+                          buildDataRow('Battery %', vehicleData['battery']),
+                          buildDataRow('Battery Charge Status', vehicleData['charge_status']),
+                          buildDataRow('Distance to Empty', vehicleData['distance_to_empty']),
+                          buildDataRow('Head Light On/Off', vehicleData['headlight']),
+                          buildDataRow('Side Stand', vehicleData['side_stand']),
+                          buildDataRow('Speed', vehicleData['speed']),
+                          buildDataRow('Total KMS', vehicleData['total_kms']),
+                          buildDataRow('Travel Direction', vehicleData['travel_direction']),
+                          buildDataRow('Trip A', vehicleData['trip_a']),
+                          buildDataRow('Trip B', vehicleData['trip_b']),
+
+                        ],
+                      ),
+                    ),
+    );
+  }
+
+  Widget buildDataRow(String label, dynamic value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(value != null ? value.toString() : 'N/A', style: TextStyle(fontSize: 16)),
+        ],
+      ),
+    );
+  }
+}
