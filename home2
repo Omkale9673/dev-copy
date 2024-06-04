@@ -1,6 +1,5 @@
-import 'package:bike/profile_page.dart';
-import 'package:bike/support.dart';
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -27,8 +26,7 @@ class HomePage extends StatelessWidget {
                 const Align(
                   alignment: Alignment.bottomLeft,
                   child: Padding(
-                    padding:
-                        EdgeInsets.only(top: 70.0, bottom: 120, left: 50.0),
+                    padding: EdgeInsets.only(top: 70.0, bottom: 120, left: 50.0),
                     child: Text(
                       'Menu',
                       style: TextStyle(
@@ -48,8 +46,7 @@ class HomePage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => const ProfilePage()),
+                    MaterialPageRoute(builder: (context) => const ProfilePage()),
                   );
                 },
               ),
@@ -94,8 +91,7 @@ class HomePage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => const SupportPage()),
+                    MaterialPageRoute(builder: (context) => const SupportPage()),
                   );
                 },
               ),
@@ -147,8 +143,7 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                     child: const RotationTransition(
-                      turns: AlwaysStoppedAnimation(
-                          1), // Adjust the value to control the rotation
+                      turns: AlwaysStoppedAnimation(1),
                       child: Icon(
                         Icons.more_horiz_outlined,
                         size: 40,
@@ -159,8 +154,7 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(
-                    top: 30.0, left: 12.0), // Adjusted top padding
+                padding: const EdgeInsets.only(top: 30.0, left: 12.0),
                 child: GestureDetector(
                   onTap: () {
                     // Handle notification icon tap
@@ -169,13 +163,12 @@ class HomePage extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: Colors.white, // Border color
+                        color: Colors.white,
                         width: 1,
                       ),
                     ),
                     child: const RotationTransition(
-                      turns: AlwaysStoppedAnimation(
-                          1), // Adjust the value to control the rotation
+                      turns: AlwaysStoppedAnimation(1),
                       child: Icon(
                         Icons.notifications_none,
                         size: 40,
@@ -266,9 +259,10 @@ class MyHomePage extends StatelessWidget {
               ),
             ),
             const Align(
-              alignment: Alignment.bottomCenter,
-              child:
-                  AnimatedCircularWave(), // Add the animated circular wave here
+              alignment: Alignment.centerLeft,
+              child: AnimatedCircularWave(
+                batteryPercentage: 75,
+              ),
             ),
           ],
         ),
@@ -278,14 +272,15 @@ class MyHomePage extends StatelessWidget {
 }
 
 class AnimatedCircularWave extends StatefulWidget {
-  const AnimatedCircularWave({Key? key}) : super(key: key);
+  final int batteryPercentage;
+
+  const AnimatedCircularWave({Key? key, required this.batteryPercentage}) : super(key: key);
 
   @override
   _AnimatedCircularWaveState createState() => _AnimatedCircularWaveState();
 }
 
-class _AnimatedCircularWaveState extends State<AnimatedCircularWave>
-    with SingleTickerProviderStateMixin {
+class _AnimatedCircularWaveState extends State<AnimatedCircularWave> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -301,17 +296,26 @@ class _AnimatedCircularWaveState extends State<AnimatedCircularWave>
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _animation,
-      builder: (context, child) {
-        return CustomPaint(
-          painter: CircularWavePainter(_animation.value),
-          child: const SizedBox(
-            width: 300,
-            height: 410,
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.5,
+      height: MediaQuery.of(context).size.width * 0.5, // Make it a square
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          AnimatedBuilder(
+            animation: _animation,
+            builder: (context, child) {
+              return CustomPaint(
+                painter: CircularWavePainter(_animation.value),
+                child: const SizedBox.expand(),
+              );
+            },
           ),
-        );
-      },
+          CircularLightAnimation(
+            batteryPercentage: widget.batteryPercentage,
+          ),
+        ],
+      ),
     );
   }
 
@@ -329,10 +333,10 @@ class CircularWavePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 6, size.height / 80);
-    final maxRadius = size.width / 4;
+    final center = Offset(size.width / 2, size.height / 2);
+    final maxRadius = size.width / 2;
     final paint = Paint()
-      ..color = const Color.fromARGB(255, 255, 255, 255).withOpacity(0.2);
+      ..color = const Color.fromARGB(255, 17, 255, 1).withOpacity(0.2);
 
     const circlesCount = 5;
     for (int i = 0; i < circlesCount; i++) {
@@ -343,6 +347,106 @@ class CircularWavePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
+class CircularLightAnimation extends StatefulWidget {
+  final int batteryPercentage;
+
+  const CircularLightAnimation({Key? key, required this.batteryPercentage}) : super(key: key);
+
+  @override
+  _CircularLightAnimationState createState() => _CircularLightAnimationState();
+}
+
+class _CircularLightAnimationState extends State<CircularLightAnimation> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      size: Size.square(MediaQuery.of(context).size.width * 0.3), // Adjust size as needed
+      painter: CircularLightPainter(
+        animation: _controller,
+        batteryPercentage: widget.batteryPercentage,
+      ),
+    );
+  }
+}
+
+class CircularLightPainter extends CustomPainter {
+  final Animation<double> animation;
+  final int batteryPercentage;
+
+  CircularLightPainter({
+    required this.animation,
+    required this.batteryPercentage,
+  }) : super(repaint: animation);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4.0
+      ..shader = SweepGradient(
+        colors: [
+          const Color.fromARGB(0, 0, 38, 255),
+          const Color.fromARGB(255, 223, 252, 8).withOpacity(0.5),
+          const Color.fromARGB(255, 0, 255, 30),
+          const Color.fromARGB(255, 240, 46, 20).withOpacity(0.5),
+          Colors.transparent,
+        ],
+        stops: const [0.0, 0.2, 0.5, 0.8, 1.0],
+        startAngle: 0.0,
+        endAngle: 2 * pi,
+        transform: GradientRotation(animation.value * 2 * pi),
+      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
+
+    final Offset center = Offset(size.width / 2, size.height / 2);
+    final double radius = size.width / 2;
+
+    canvas.drawCircle(center, radius, paint);
+
+    // Draw the battery percentage text in the center
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: '$batteryPercentage%',
+        style: const TextStyle(
+          fontSize: 30.0,
+          color: Color.fromARGB(255, 0, 0, 0),
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    );
+
+    textPainter.layout();
+    final textOffset = Offset(
+      center.dx - textPainter.width / 2,
+      center.dy - textPainter.height / 2,
+    );
+
+    textPainter.paint(canvas, textOffset);
+  }
+
+  @override
+  bool shouldRepaint(CircularLightPainter oldDelegate) {
     return true;
   }
 }
