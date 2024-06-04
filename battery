@@ -1,0 +1,102 @@
+class CircularLightAnimation extends StatefulWidget {
+  final int batteryPercentage;
+
+  CircularLightAnimation({required this.batteryPercentage});
+
+  @override
+  _CircularLightAnimationState createState() => _CircularLightAnimationState();
+}
+
+class _CircularLightAnimationState extends State<CircularLightAnimation>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: CustomPaint(
+        size: const Size(91, 0), // Adjust size as needed
+        painter: CircularLightPainter(
+          animation: _controller,
+          batteryPercentage: widget.batteryPercentage,
+        ),
+      ),
+    );
+  }
+}
+
+class CircularLightPainter extends CustomPainter {
+  final Animation<double> animation;
+  final int batteryPercentage;
+
+  CircularLightPainter({
+    required this.animation,
+    required this.batteryPercentage,
+  }) : super(repaint: animation);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4.0
+      ..shader = SweepGradient(
+        colors: [
+          const Color.fromARGB(0, 0, 38, 255),
+          Color.fromARGB(255, 223, 252, 8).withOpacity(0.5),
+          Color.fromARGB(255, 0, 255, 30),
+          Color.fromARGB(255, 240, 46, 20).withOpacity(0.5),
+          Colors.transparent,
+        ],
+        stops: const [0.0, 0.2, 0.5, 0.8, 1.0],
+        startAngle: 0.0,
+        endAngle: 2 * pi,
+        transform: GradientRotation(animation.value * 2 * pi),
+      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
+
+    final Offset center = Offset(size.width / 2, size.height / 2);
+    final double radius = size.width / 2;
+
+    canvas.drawCircle(center, radius, paint);
+
+    // Draw the battery percentage text in the center
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: '$batteryPercentage%',
+        style: const TextStyle(
+          fontSize: 30.0,
+          color: Color.fromARGB(255, 0, 0, 0),
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    );
+
+    textPainter.layout();
+    final textOffset = Offset(
+      center.dx - textPainter.width / 2,
+      center.dy - textPainter.height / 2,
+    );
+
+    textPainter.paint(canvas, textOffset);
+  }
+
+  @override
+  bool shouldRepaint(CircularLightPainter oldDelegate) {
+    return true;
+  }
+}
