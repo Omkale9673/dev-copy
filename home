@@ -1,110 +1,6 @@
 import 'package:bike_project/screens/profile.dart';
 import 'package:bike_project/screens/support.dart';
 import 'package:flutter/material.dart';
-import 'dart:math';
-
-class CircularLightAnimation extends StatefulWidget {
-  final int batteryPercentage;
-
-  CircularLightAnimation({required this.batteryPercentage});
-
-  @override
-  _CircularLightAnimationState createState() => _CircularLightAnimationState();
-}
-
-class _CircularLightAnimationState extends State<CircularLightAnimation>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: CustomPaint(
-        size: const Size(91, 0), // Adjust size as needed
-        painter: CircularLightPainter(
-          animation: _controller,
-          batteryPercentage: widget.batteryPercentage,
-        ),
-      ),
-    );
-  }
-}
-
-class CircularLightPainter extends CustomPainter {
-  final Animation<double> animation;
-  final int batteryPercentage;
-
-  CircularLightPainter({
-    required this.animation,
-    required this.batteryPercentage,
-  }) : super(repaint: animation);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final Paint paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 4.0
-      ..shader = SweepGradient(
-        colors: [
-          const Color.fromARGB(0, 0, 38, 255),
-          Color.fromARGB(255, 223, 252, 8).withOpacity(0.5),
-          Color.fromARGB(255, 0, 255, 30),
-          Color.fromARGB(255, 240, 46, 20).withOpacity(0.5),
-          Colors.transparent,
-        ],
-        stops: const [0.0, 0.2, 0.5, 0.8, 1.0],
-        startAngle: 0.0,
-        endAngle: 2 * pi,
-        transform: GradientRotation(animation.value * 2 * pi),
-      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
-
-    final Offset center = Offset(size.width / 2, size.height / 2);
-    final double radius = size.width / 2;
-
-    canvas.drawCircle(center, radius, paint);
-
-    // Draw the battery percentage text in the center
-    final textPainter = TextPainter(
-      text: TextSpan(
-        text: '$batteryPercentage%',
-        style: const TextStyle(
-          fontSize: 30.0,
-          color: Color.fromARGB(255, 0, 0, 0),
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      textDirection: TextDirection.ltr,
-    );
-
-    textPainter.layout();
-    final textOffset = Offset(
-      center.dx - textPainter.width / 2,
-      center.dy - textPainter.height / 2,
-    );
-
-    textPainter.paint(canvas, textOffset);
-  }
-
-  @override
-  bool shouldRepaint(CircularLightPainter oldDelegate) {
-    return true;
-  }
-}
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -208,12 +104,6 @@ class HomePage extends StatelessWidget {
                 ),
               ),
             ),
-            // Add CircularLightAnimation widget here
-            Positioned(
-              top: 50,
-              left: 16,
-              child: CircularLightAnimation(batteryPercentage: 75), // Example battery percentage
-            ),
           ],
         ),
       ),
@@ -224,113 +114,114 @@ class HomePage extends StatelessWidget {
 class MyHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size;
+  Size screenSize = MediaQuery.of(context).size;
 
-    return Scaffold(
-      // Creating a drawer
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            Stack(
-              children: [
-                Positioned(
-                  left: -screenSize.width * 0.12,
-                  top: -screenSize.height * 0,
-                  child: Image.asset(
-                    'assets/images/Group.png',
-                    width: screenSize.width * 0.8,
-                    height: screenSize.height * 0.3,
-                    fit: BoxFit.contain,
-                  ),
+  return Scaffold(
+    // Creating a drawer
+    drawer: Drawer(
+  child: ListView(
+    padding: EdgeInsets.zero,
+    children: <Widget>[
+      Stack(
+        children: [
+          Positioned(
+            left: -screenSize.width * 0.12,
+            top: -screenSize.height * 0,
+            child: Image.asset(
+              'assets/images/Group.png',
+              width: screenSize.width * 0.8,
+              height: screenSize.height * 0.3,
+              fit: BoxFit.contain,
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: Padding(
+              padding: EdgeInsets.only(top: 70.0,bottom: 120 ,left: 50.0),
+              child: Text(
+                'Menu',
+                style: TextStyle(
+                  color: Color.fromARGB(255, 255, 255, 255),
+                  fontSize: 24,
                 ),
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 70.0, bottom: 120, left: 50.0),
-                    child: Text(
-                      'Menu',
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 255, 255, 255),
-                        fontSize: 24,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20.0, left: 16.0),
-              child: ListTile(
-                leading: Icon(Icons.person),
-                title: Text('Profile'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ProfilePage()),
-                  );
-                  // Implement action for profile
-                },
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ListTile(
-                leading: Icon(Icons.settings),
-                title: Text('Service'),
-                onTap: () {
-                  // Implement action for Service
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ListTile(
-                leading: Icon(Icons.directions_bike),
-                title: Text('Bike Details'),
-                onTap: () {
-                  // Implement action for Bike Details
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ListTile(
-                leading: Icon(Icons.location_on_outlined),
-                title: Text('Ride History'),
-                onTap: () {
-                  // Implement action for Ride History
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ListTile(
-                leading: Icon(Icons.book_outlined),
-                title: Text('Manuals'),
-                onTap: () {
-                  // Implement action for Manuals
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ListTile(
-                leading: Icon(Icons.support),
-                title: Text('Support'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SupportPage()),
-                  );
-                  // Implement action for Support
-                },
-              ),
-            ),
-            // Add more Padding widgets with ListTile children for additional items
-          ],
+          ),
+        ],
+      ),
+      Padding(
+        padding: const EdgeInsets.only(top: 20.0, left: 16.0),
+        child: ListTile(
+          leading: Icon(Icons.person),
+          title: Text('Profile'),
+          onTap: () {
+            Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ProfilePage()),
+          );
+            // Implement action for profile
+          },
         ),
       ),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: ListTile(
+          leading: Icon(Icons.settings),
+          title: Text('Service'),
+          onTap: () {
+            // Implement action for Service
+          },
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: ListTile(
+          leading: Icon(Icons.directions_bike),
+          title: Text('Bike Details'),
+          onTap: () {
+            // Implement action for Bike Details
+          },
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: ListTile(
+          leading: Icon(Icons.location_on_outlined),
+          title: Text('Ride History'),
+          onTap: () {
+            // Implement action for Ride History
+          },
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: ListTile(
+          leading: Icon(Icons.book_outlined),
+          title: Text('Manuals'),
+          onTap: () {
+            // Implement action for Manuals
+          },
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: ListTile(
+          leading: Icon(Icons.support),
+          title: Text('Support'),
+          onTap: () {
+            Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SupportPage()),
+          );
+            // Implement action for Support
+          },
+        ),
+      ),
+      // Add more Padding widgets with ListTile children for additional items
+    ],
+  ),
+),
+
       body: HomePage(), // Replaced body with HomePage
       // Customizing the FloatingActionButton to display three dots horizontally
       floatingActionButton: Builder(
@@ -342,11 +233,12 @@ class MyHome extends StatelessWidget {
                 Scaffold.of(context).openDrawer();
               },
               // Using a custom shape to make the button circular
+              
               shape: CircleBorder(
                 side: BorderSide(
-                  color: Color.fromARGB(255, 183, 195, 255), // Border color
-                  width: 1.5, // Border width
-                ),
+          color: Color.fromARGB(255, 183, 195, 255), // Border color
+          width: 1.5, // Border width
+        ),
               ),
               // Setting a background color for the button
               backgroundColor: Colors.blue,
