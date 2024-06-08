@@ -1,6 +1,9 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:bike/profile_page.dart';
 import 'package:bike/support.dart';
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -28,7 +31,7 @@ class HomePage extends StatelessWidget {
                   alignment: Alignment.bottomLeft,
                   child: Padding(
                     padding:
-                        EdgeInsets.only(top: 70.0, bottom: 120, left: 50.0),
+                        EdgeInsets.only(top: 70.0, bottom: 120, left: 80.0),
                     child: Text(
                       'Menu',
                       style: TextStyle(
@@ -38,92 +41,322 @@ class HomePage extends StatelessWidget {
                     ),
                   ),
                 ),
+                Align(
+                  alignment: const AlignmentDirectional(-0.8, 1.05),
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 64),
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
+                ),
               ],
             ),
             Padding(
               padding: const EdgeInsets.only(top: 20.0, left: 16.0),
               child: ListTile(
-                leading: const Icon(Icons.person),
+                leading: SizedBox(
+                  width: 28.0, // updated size to accommodate increased radius
+                  height: 28.0, // updated size to accommodate increased radius
+
+                  child: ClipRRect(
+                    borderRadius:
+                        BorderRadius.circular(18), // same as container radius
+                    child: Image.asset(
+                      'assets/images/profile.png',
+                      width: 28.0, // match container size
+                      height: 28.0, // match container size
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
                 title: const Text('Profile'),
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => const ProfilePage()),
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          const ProfilePage(),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        const begin = Offset(-1.0, 0.0);
+                        const end = Offset.zero;
+                        const curve = Curves.ease;
+
+                        var tween = Tween(begin: begin, end: end)
+                            .chain(CurveTween(curve: curve));
+                        var offsetAnimation = animation.drive(tween);
+
+                        return SlideTransition(
+                          position: offsetAnimation,
+                          child: child,
+                        );
+                      },
+                    ),
                   );
                 },
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.only(top: 0.0, left: 16.0),
               child: ListTile(
-                leading: const Icon(Icons.settings),
+                leading: SizedBox(
+                  width: 28.0, // updated size to accommodate increased radius
+                  height: 28.0, // updated size to accommodate increased radius
+                  child: ClipRRect(
+                    borderRadius:
+                        BorderRadius.circular(18), // same as container radius
+                    child: Image.asset(
+                      'assets/images/service.png',
+                      width: 28.0, // match container size
+                      height: 28.0, // match container size
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
                 title: const Text('Service'),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          const ProfilePage(),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        const begin = Offset(-1.0, 0.0);
+                        const end = Offset.zero;
+                        const curve = Curves.ease;
+
+                        var tween = Tween(begin: begin, end: end)
+                            .chain(CurveTween(curve: curve));
+                        var offsetAnimation = animation.drive(tween);
+
+                        return SlideTransition(
+                          position: offsetAnimation,
+                          child: child,
+                        );
+                      },
+                    ),
+                  );
+                },
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.only(top: 0.0, left: 16.0),
               child: ListTile(
-                leading: const Icon(Icons.directions_bike),
+                leading: SizedBox(
+                  width: 28.0, // updated size to accommodate increased radius
+                  height: 28.0, // updated size to accommodate increased radius
+
+                  child: ClipRRect(
+                    borderRadius:
+                        BorderRadius.circular(18), // same as container radius
+                    child: Image.asset(
+                      'assets/images/bikedetails.png',
+                      width: 28.0, // match container size
+                      height: 28.0, // match container size
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
                 title: const Text('Bike Details'),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          const ProfilePage(),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        const begin = Offset(-1.0, 0.0);
+                        const end = Offset.zero;
+                        const curve = Curves.ease;
+
+                        var tween = Tween(begin: begin, end: end)
+                            .chain(CurveTween(curve: curve));
+                        var offsetAnimation = animation.drive(tween);
+
+                        return SlideTransition(
+                          position: offsetAnimation,
+                          child: child,
+                        );
+                      },
+                    ),
+                  );
+                },
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.only(top: 0.0, left: 16.0),
               child: ListTile(
-                leading: const Icon(Icons.location_on_outlined),
+                leading: SizedBox(
+                  width: 28.0, // updated size to accommodate increased radius
+                  height: 28.0, // updated size to accommodate increased radius
+
+                  child: ClipRRect(
+                    borderRadius:
+                        BorderRadius.circular(18), // same as container radius
+                    child: Image.asset(
+                      'assets/images/ridehistory.png',
+                      width: 28.0, // match container size
+                      height: 28.0, // match container size
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
                 title: const Text('Ride History'),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          const ProfilePage(),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        const begin = Offset(-1.0, 0.0);
+                        const end = Offset.zero;
+                        const curve = Curves.ease;
+
+                        var tween = Tween(begin: begin, end: end)
+                            .chain(CurveTween(curve: curve));
+                        var offsetAnimation = animation.drive(tween);
+
+                        return SlideTransition(
+                          position: offsetAnimation,
+                          child: child,
+                        );
+                      },
+                    ),
+                  );
+                },
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.only(top: 0.0, left: 16.0),
               child: ListTile(
-                leading: const Icon(Icons.book_outlined),
+                leading: SizedBox(
+                  width: 28.0, // updated size to accommodate increased radius
+                  height: 28.0, // updated size to accommodate increased radius
+
+                  child: ClipRRect(
+                    borderRadius:
+                        BorderRadius.circular(18), // same as container radius
+                    child: Image.asset(
+                      'assets/images/manuals.png',
+                      width: 28.0, // match container size
+                      height: 28.0, // match container size
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
                 title: const Text('Manuals'),
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          const ProfilePage(),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        const begin = Offset(-1.0, 0.0);
+                        const end = Offset.zero;
+                        const curve = Curves.ease;
+
+                        var tween = Tween(begin: begin, end: end)
+                            .chain(CurveTween(curve: curve));
+                        var offsetAnimation = animation.drive(tween);
+
+                        return SlideTransition(
+                          position: offsetAnimation,
+                          child: child,
+                        );
+                      },
+                    ),
+                  );
+                },
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.only(top: 0.0, left: 16.0),
               child: ListTile(
-                leading: const Icon(Icons.support),
+                leading: SizedBox(
+                  width: 28.0, // updated size to accommodate increased radius
+                  height: 28.0, // updated size to accommodate increased radius
+                  child: ClipRRect(
+                    borderRadius:
+                        BorderRadius.circular(18), // same as container radius
+                    child: Image.asset(
+                      'assets/images/support.png',
+                      width: 28.0, // match container size
+                      height: 28.0, // match container size
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
                 title: const Text('Support'),
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => const SupportPage()),
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          const SupportPage(),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        const begin = Offset(-1.0, 0.0);
+                        const end = Offset.zero;
+                        const curve = Curves.ease;
+
+                        var tween = Tween(begin: begin, end: end)
+                            .chain(CurveTween(curve: curve));
+                        var offsetAnimation = animation.drive(tween);
+
+                        return SlideTransition(
+                          position: offsetAnimation,
+                          child: child,
+                        );
+                      },
+                    ),
                   );
                 },
               ),
             ),
             Padding(
               padding: const EdgeInsets.only(
-                  top: 150.0), // Add only bottom padding here
+                  top: 150.0), // Add only top padding here
               child: Align(
-                alignment: Alignment.bottomCenter,
+                alignment:
+                    AlignmentDirectional.bottomCenter, // Align to bottom center
                 child: GestureDetector(
-                  onTap: () {},
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: Colors.black, // Border color
-                        width: 2,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const HomePage()),
+                    );
+                  },
+                  child: SizedBox(
+                    width: 32.0, // Size to accommodate increased radius
+                    height: 32.0, // Size to accommodate increased radius
+                    child: ClipRRect(
+                      borderRadius:
+                          BorderRadius.circular(18), // Same as container radius
+                      child: Image.asset(
+                        'assets/images/home.png',
+                        width: 28.0, // Match container size
+                        height: 28.0, // Match container size
+                        fit: BoxFit.cover,
                       ),
-                    ),
-                    child: const Icon(
-                      Icons.home_outlined,
-                      size: 35,
-                      color: Colors.black,
                     ),
                   ),
                 ),
               ),
-            ),
+            )
           ],
         ),
       ),
@@ -138,50 +371,25 @@ class HomePage extends StatelessWidget {
                   onTap: () {
                     Scaffold.of(context).openDrawer();
                   },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: Colors.white, // Border color
-                        width: 1,
-                      ),
-                    ),
-                    child: const RotationTransition(
-                      turns: AlwaysStoppedAnimation(
-                          1), // Adjust the value to control the rotation
-                      child: Icon(
-                        Icons.more_horiz_outlined,
-                        size: 40,
-                        color: Colors.white,
-                      ),
-                    ),
+                  child: Image.asset(
+                    'assets/images/menu.png',
+                    width: 42.0, // match container size
+                    height: 42.0, // match container size
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(
-                    top: 30.0, left: 12.0), // Adjusted top padding
+                padding: const EdgeInsets.only(top: 30.0, left: 12.0),
                 child: GestureDetector(
                   onTap: () {
                     // Handle notification icon tap
                   },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: Colors.white, // Border color
-                        width: 1,
-                      ),
-                    ),
-                    child: const RotationTransition(
-                      turns: AlwaysStoppedAnimation(
-                          1), // Adjust the value to control the rotation
-                      child: Icon(
-                        Icons.notifications_none,
-                        size: 40,
-                        color: Colors.white,
-                      ),
-                    ),
+                  child: Image.asset(
+                    'assets/images/notification.png',
+                    width: 52.0, // match container size
+                    height: 52.0, // match container size
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
@@ -266,10 +474,10 @@ class MyHomePage extends StatelessWidget {
               ),
             ),
             const Align(
-              alignment: Alignment.bottomCenter,
+              alignment: Alignment.centerLeft,
               child: AnimatedCircularWave(
-                batteryPercentage: 75,
-              ), // Add the animated circular wave here
+                batteryPercentage: 79,
+              ),
             ),
           ],
         ),
@@ -305,25 +513,26 @@ class _AnimatedCircularWaveState extends State<AnimatedCircularWave>
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        AnimatedBuilder(
-          animation: _animation,
-          builder: (context, child) {
-            return CustomPaint(
-              painter: CircularWavePainter(_animation.value),
-              child: const SizedBox(
-                width: 300,
-                height: 410,
-              ),
-            );
-          },
-        ),
-        CircularLightAnimation(
-          batteryPercentage: widget.batteryPercentage,
-        ),
-      ],
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.5,
+      height: MediaQuery.of(context).size.width * 0.5, // Make it a square
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          AnimatedBuilder(
+            animation: _animation,
+            builder: (context, child) {
+              return CustomPaint(
+                painter: CircularWavePainter(_animation.value),
+                child: const SizedBox.expand(),
+              );
+            },
+          ),
+          CircularLightAnimation(
+            batteryPercentage: widget.batteryPercentage,
+          ),
+        ],
+      ),
     );
   }
 
@@ -334,6 +543,71 @@ class _AnimatedCircularWaveState extends State<AnimatedCircularWave>
   }
 }
 
+class VehicleDashboardScreen extends StatefulWidget {
+  @override
+  _VehicleDashboardScreenState createState() => _VehicleDashboardScreenState();
+}
+
+class _VehicleDashboardScreenState extends State<VehicleDashboardScreen> {
+  Map<String, dynamic> vehicleData = {}; // Provide a default initialization
+  bool isLoading = true;
+  String errorMessage = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchVehicleDashboard();
+  }
+
+  Future<void> fetchVehicleDashboard() async {
+    const url =
+        'http://34.93.202.185:5000/api/v1/get_vehicle_dashboard?vehicle_id=brk123456789&session=brk129';
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        setState(() {
+          vehicleData =
+              data['data']; // Assuming 'data' is the key for the vehicle data
+          isLoading = false;
+        });
+        print('Vehicle data: $vehicleData');
+        // Debugging: Print the API response
+      } else {
+        setState(() {
+          isLoading = false;
+          errorMessage =
+              'Failed to load vehicle dashboard: ${response.statusCode}';
+        });
+        print(errorMessage);
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+        errorMessage = 'Failed to load vehicle dashboard: $e';
+      });
+      print(errorMessage);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : errorMessage.isNotEmpty
+              ? Center(child: Text(errorMessage))
+              : vehicleData.isEmpty
+                  ? const Center(child: Text('No data available'))
+                  : Center(
+                      child: CircularLightAnimation(
+                        batteryPercentage: vehicleData['battery'] ?? 0,
+                      ),
+                    ),
+    );
+  }
+}
+
 class CircularWavePainter extends CustomPainter {
   final double animationValue;
 
@@ -341,10 +615,10 @@ class CircularWavePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 6, size.height / 80);
-    final maxRadius = size.width / 4;
+    final center = Offset(size.width / 2.3, size.height / 2.55);
+    final maxRadius = size.width / 2.5;
     final paint = Paint()
-      ..color = const Color.fromARGB(255, 17, 255, 1).withOpacity(0.2);
+      ..color = Color.fromARGB(255, 255, 255, 255).withOpacity(0.2);
 
     const circlesCount = 5;
     for (int i = 0; i < circlesCount; i++) {
@@ -362,7 +636,8 @@ class CircularWavePainter extends CustomPainter {
 class CircularLightAnimation extends StatefulWidget {
   final int batteryPercentage;
 
-  const CircularLightAnimation({required this.batteryPercentage});
+  const CircularLightAnimation({Key? key, required this.batteryPercentage})
+      : super(key: key);
 
   @override
   _CircularLightAnimationState createState() => _CircularLightAnimationState();
@@ -389,13 +664,11 @@ class _CircularLightAnimationState extends State<CircularLightAnimation>
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: CustomPaint(
-        size: const Size(91, 0), // Adjust size as needed
-        painter: CircularLightPainter(
-          animation: _controller,
-          batteryPercentage: widget.batteryPercentage,
-        ),
+    return CustomPaint(
+      size: Size.square(MediaQuery.of(context).size.width * 0.25),
+      painter: CircularLightPainter(
+        animation: _controller,
+        batteryPercentage: widget.batteryPercentage,
       ),
     );
   }
@@ -414,13 +687,13 @@ class CircularLightPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final Paint paint = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 4.0
+      ..strokeWidth = 5.0
       ..shader = SweepGradient(
         colors: [
           const Color.fromARGB(0, 0, 38, 255),
-          const Color.fromARGB(255, 223, 252, 8).withOpacity(0.5),
-          const Color.fromARGB(255, 0, 255, 30),
-          const Color.fromARGB(255, 240, 46, 20).withOpacity(0.5),
+          Color.fromARGB(255, 44, 52, 195).withOpacity(0.5),
+          Color.fromARGB(255, 0, 4, 255),
+          Color.fromARGB(255, 118, 120, 121).withOpacity(0.5),
           Colors.transparent,
         ],
         stops: const [0.0, 0.2, 0.5, 0.8, 1.0],
@@ -429,7 +702,7 @@ class CircularLightPainter extends CustomPainter {
         transform: GradientRotation(animation.value * 2 * pi),
       ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 
-    final Offset center = Offset(size.width / 2, size.height / 2);
+    final Offset center = Offset(size.width / 2.6, size.height / 3.6);
     final double radius = size.width / 2;
 
     canvas.drawCircle(center, radius, paint);
