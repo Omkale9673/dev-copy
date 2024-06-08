@@ -1,0 +1,76 @@
+import 'package:flutter/material.dart';
+
+class MenuModel {
+  void dispose() {}
+}
+
+class MenuPage extends StatefulWidget {
+  const MenuPage({Key? key}) : super(key: key);
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _MenuPageState createState() => _MenuPageState();
+}
+
+class _MenuPageState extends State<MenuPage> {
+  late MenuModel _model;
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+    _model = MenuModel();
+  }
+
+  @override
+  void dispose() {
+    _model.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: scaffoldKey,
+      body: Stack(
+        children: [
+          Align(
+            alignment: const AlignmentDirectional(-2, -1.03),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.asset(
+                'assets/images/Group.png',
+                width: 326,
+                height: 230,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+          const Align(
+            alignment: AlignmentDirectional(-0.6, -0.83),
+            child: Text(
+              'Menu',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontFamily: 'Montserrat',
+              ),
+            ),
+          ),
+          Align(
+            alignment: const AlignmentDirectional(-0.8, -0.85),
+            child: IconButton(
+              icon: const Icon(
+                Icons.arrow_back_ios,
+                color: Colors.white,
+                size: 24,
+              ),
+              onPressed: () {},
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
