@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MyApp());
-}
 
-class MyApp extends StatelessWidget {
+class Thome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       home: Scaffold(
-        body: GradientBox(),
+        body: Stack(
+          children: [
+            GradientBox(),
+            Center(
+              child: TripleLayerSquare(),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -27,7 +31,7 @@ class GradientBox extends StatelessWidget {
       child: Container(
         width: 100, // Set your preferred width
         height: screenSize.height, // Take full height of the screen
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
@@ -44,3 +48,80 @@ class GradientBox extends StatelessWidget {
     );
   }
 }
+
+class TripleLayerSquare extends StatelessWidget {
+  const TripleLayerSquare({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double size = constraints.maxWidth * 0.5; // Adjust this multiplier as needed
+
+        return Align(
+          alignment: Alignment.centerLeft, // Align to the center-left
+          child: Transform.rotate(
+            angle: 45 * (3.1415927 / 180), // Convert degrees to radians
+            child: Container(
+              width: size * 0.83, // Width of the middle square
+              height: size * 0.83, // Height of the outer square
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  transform: GradientRotation(86.62 * (3.1415927 / 90)), // Convert degrees to radians
+                  stops: [0.2505, 0.7943, 1.2565, 1.658], // Adjusted stops based on percentages
+                  colors: [
+                    Color(0xFF09545E), // #09545E
+                    Color(0xFF0C7785), // #0C7785
+                    Color.fromRGBO(9, 84, 94, 0.517708), // rgba(9, 84, 94, 0.517708)
+                    Colors.transparent, // Transparent color for 0 opacity
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(size * 0.175), // Rounded corners
+              ),
+              child: Center(
+                child: Transform.rotate(
+                  angle: -90 * (3.1415927 / 180), // Rotate in the opposite direction
+                  child: Container(
+                    width: size * 0.7, // Width of the middle square
+                    height: size * 0.7, // Height of the middle square
+                    decoration: BoxDecoration(
+                      color: Colors.white, // Color of the middle square
+                      borderRadius: BorderRadius.circular(size * 0.125), // Rounded corners
+                    ),
+                    child: Center(
+                      child: Transform.rotate(
+                        angle: 90 * (3.1415927 / 180), // Rotate back to original angle
+                        child: Container(
+                          width: size * 0.6, // Width of the inner square
+                          height: size * 0.6, // Height of the inner square
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                              transform: GradientRotation(90.3 * (3.1415927 / 180)), // Convert degrees to radians
+                              stops: [0.1376, 0.5174, 0.8403, 1.1206], // Adjusted stops based on percentages
+                              colors: [
+                                Color(0xFF09545E), // #09545E
+                                Color(0xFF0C7785), // #0C7785
+                                Color.fromRGBO(9, 84, 94, 0.517708), // rgba(9, 84, 94, 0.517708)
+                                Colors.transparent, // Transparent color for 0 opacity
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(size * 0.125), // Rounded corners
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
