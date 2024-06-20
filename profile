@@ -1,5 +1,5 @@
-import 'package:bike/editprofile_page.dart';
-import 'package:bike/home_page.dart';
+import 'package:bike_project/screens/editprofile.dart';
+import 'package:bike_project/screens/home.dart';
 import 'package:flutter/material.dart';
 
 class ProfileModel {
@@ -317,7 +317,7 @@ class _ProfilePageState extends State<ProfilePage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const HomePage()),
+                  MaterialPageRoute(builder: (context) => const MyHome()),
                 );
               },
               child: Image.asset(
