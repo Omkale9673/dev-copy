@@ -1,5 +1,5 @@
-import 'package:bike_project/screens/editprofile.dart';
-import 'package:bike_project/screens/home.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class ProfileModel {
@@ -32,304 +32,237 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    return Scaffold(
-      key: scaffoldKey,
-      body: Stack(
-        children: [
-          Align(
-            alignment: const AlignmentDirectional(-2, -1.03),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.asset(
-                'assets/images/Group.png',
-                width: screenWidth * 0.8, // 80% of screen width
-                height: screenHeight * 0.3, // 25% of screen height
-                fit: BoxFit.contain,
-              ),
-            ),
-          ),
-          const Align(
-            alignment: AlignmentDirectional(-0.5, -0.83),
-            child: Text(
-              'Profile',
-              style: TextStyle(
-                fontSize: 20,
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-                fontFamily: 'Montserrat',
-              ),
-            ),
-          ),
-          Align(
-            alignment: const AlignmentDirectional(-0.8, -0.85),
-            child: IconButton(
-              icon: const Icon(
-                Icons.arrow_back_ios,
-                color: Colors.white,
-                size: 24,
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ),
-          Positioned(
-            top: screenHeight * 0.5,
-            left: screenWidth * 0.1,
-            right: screenWidth * 0.1,
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) =>
-                        const EditProfilePage(),
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                      const begin = Offset(-1.0, 0.0);
-                      const end = Offset.zero;
-                      const curve = Curves.ease;
-
-                      var tween = Tween(begin: begin, end: end)
-                          .chain(CurveTween(curve: curve));
-                      var offsetAnimation = animation.drive(tween);
-
-                      return SlideTransition(
-                        position: offsetAnimation,
-                        child: child,
-                      );
-                    },
-                  ),
-                );
-              },
-              child: const Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Edit Profile',
-                    style: TextStyle(
-                      fontFamily: 'Montserrat',
-                      fontSize: 20,
-                      letterSpacing: 0,
-                    ),
-                  ),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    color: Colors.grey,
-                    size: 20,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            top: screenHeight * 0.55,
-            left: screenWidth * 0.1,
-            right: screenWidth * 0.1,
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) =>
-                        const EditProfilePage(),
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                      const begin = Offset(-1.0, 0.0);
-                      const end = Offset.zero;
-                      const curve = Curves.ease;
-
-                      var tween = Tween(begin: begin, end: end)
-                          .chain(CurveTween(curve: curve));
-                      var offsetAnimation = animation.drive(tween);
-
-                      return SlideTransition(
-                        position: offsetAnimation,
-                        child: child,
-                      );
-                    },
-                  ),
-                );
-              },
-              child: Container(
-                height: 27,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'View Document',
-                      style: TextStyle(
-                        fontFamily: 'Montserrat',
-                        fontSize: 20,
-                        letterSpacing: 0,
+    return MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Stack(
+            children: [
+              Positioned(
+                top: 70,
+                left: 0,
+                child: ClipPath(
+                  clipper: CustomClipPath(),
+                  child: Container(
+                    width: 301,
+                    height: 114.43,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        stops: [0.1376, 0.5174, 0.8403, 1.1206],
+                        colors: [
+                          Color(0xFF09545E),
+                          Color(0xFF0C7785),
+                          Color(0x8309545E),
+                          Color(0x00054C66),
+                        ],
+                        transform: GradientRotation(90.3 * (3.1415927 / 90)),
+                      ),
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(20),
+                        bottomRight: Radius.elliptical(0, 100),
                       ),
                     ),
-                    Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.grey,
-                      size: 20,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Align(
-            alignment: const AlignmentDirectional(-0.77, 0.25),
-            child: GestureDetector(
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text(
-                          'Are you sure you want to logout?',
-                          textAlign: TextAlign.start,
-                          style: TextStyle(
-                              fontFamily: 'Montserrat',
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500),
+                        IconButton(
+                          icon: const Icon(
+                            Icons.arrow_back_ios,
+                            color: Colors.white,
+                            size: 24,
+                          ),
+                          onPressed: () => Navigator.of(context).pop(),
                         ),
-                        const SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                  colors: [
-                                    Color(
-                                        0xFF202832), // Adjust gradient colors as needed
-                                    Color(
-                                        0xFF105B9C), // Adjust gradient colors as needed
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.of(context)
-                                      .pop(); // Close the dialog
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors
-                                      .transparent, // Set transparent color for ElevatedButton
-                                  elevation: 0, // Remove elevation
-                                ),
-                                child: const Text(
-                                  'Cancel',
-                                  style: TextStyle(
-                                    color: Colors
-                                        .white, // Text color of Cancel button
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                  colors: [
-                                    Color(
-                                        0xFF202832), // Adjust gradient colors as needed
-                                    Color(
-                                        0xFF105B9C), // Adjust gradient colors as needed
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  // Perform logout action here
-                                  Navigator.of(context)
-                                      .pop(); // Close the dialog
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors
-                                      .transparent, // Set transparent color for ElevatedButton
-                                  elevation: 0, // Remove elevation
-                                ),
-                                child: const Text(
-                                  'Logout',
-                                  style: TextStyle(
-                                    color: Colors
-                                        .white, // Text color of Logout button
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                        const Text(
+                          'Profile',
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontFamily: 'Goldman',
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ],
                     ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 20),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
                   ),
-                );
-              },
-              child: Text(
-                'Logout',
-                style: Theme.of(context).textTheme.bodyLarge!.merge(
-                      const TextStyle(
-                        fontFamily: 'Montserrat',
-                        color: Color(0xFFFF693B),
-                        fontSize: 19,
-                        letterSpacing: 0,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-              ),
-            ),
-          ),
-          Align(
-            alignment: const AlignmentDirectional(2, -0.83),
-            child: GestureDetector(
-              onTap: () {},
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.asset(
-                  'assets/images/sos.png',
-                  width: screenWidth * 0.65,
-                  height: screenHeight * 0.04,
-                  fit: BoxFit.contain,
                 ),
               ),
-            ),
-          ),
-          Align(
-            alignment: const AlignmentDirectional(0.04, 0.94),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MyHome()),
-                );
-              },
-              child: Image.asset(
-                'assets/images/home.png',
-                width: 32.0, // Match container size
-                height: 32.0, // Match container size
-                fit: BoxFit.cover,
+              Positioned(
+                top: MediaQuery.of(context).size.height * 0.55,
+                left: MediaQuery.of(context).size.width * 0.1,
+                right: MediaQuery.of(context).size.width * 0.1,
+                child: GestureDetector(
+                  onTap: () {},
+                  child: Container(
+                    height: 27,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Mange Document',
+                          style: TextStyle(
+                            fontFamily: 'Montserrat',
+                            fontSize: 20,
+                            letterSpacing: 0,
+                          ),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          color: Colors.grey,
+                          size: 20,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ),
+              Align(
+                alignment: const AlignmentDirectional(-0.77, 0.25),
+                child: GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Image.asset(
+                                  'assets/images/logout.png',
+                                  width: 60.0,
+                                  height: 60.0,
+                                  fit: BoxFit.cover,
+                                ),
+                                const SizedBox(
+                                    width:
+                                        8), // Adjust spacing between image and text as needed
+                                const Flexible(
+                                  child: Text(
+                                    'Are you sure you want to logout?',
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      fontFamily: 'Montserrat',
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                      elevation: 0,
+                                    ),
+                                    child: const Text(
+                                      'Cancel',
+                                      style: TextStyle(
+                                        color: Color.fromARGB(255, 0, 0, 0),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  width: 100, // Adjust width as needed
+                                  height: 40, // Adjust height as needed
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: Colors.green, // Border color
+                                      width: 2.0, // Border width
+                                    ),
+                                  ),
+                                  child: ElevatedButton(
+                                    onPressed: () => exit(0),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors
+                                          .transparent, // Set transparent color for ElevatedButton
+                                      elevation: 0, // Remove elevation
+                                    ),
+                                    child: const Text(
+                                      'Ok',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 20),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    'Logout',
+                    style: Theme.of(context).textTheme.bodyLarge!.merge(
+                          const TextStyle(
+                            fontFamily: 'Montserrat',
+                            color: Color(0xFFFF693B),
+                            fontSize: 19,
+                            letterSpacing: 0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                  ),
+                ),
+              ),
+              Align(
+                alignment: const AlignmentDirectional(0.04, 0.94),
+                child: GestureDetector(
+                  onTap: () {},
+                  child: Image.asset(
+                    'assets/images/home.png',
+                    width: 45.0,
+                    height: 45.0,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
+}
+
+class CustomClipPath extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    path.lineTo(0, 0); // Top left
+    path.lineTo(size.width, 0); // Top right
+    path.lineTo(size.width, size.height - 40); // Bottom right cut
+    path.lineTo(size.width - 85, size.height); // Bottom right corner
+    path.lineTo(0, size.height); // Bottom left
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }
