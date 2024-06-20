@@ -20,10 +20,13 @@ class GradientBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    final Size screenSize = MediaQuery.of(context).size;
+
+    return Align(
+      alignment: Alignment.centerLeft, // Align to the left
       child: Container(
         width: 100, // Set your preferred width
-        height: 800, // Set your preferred height
+        height: screenSize.height, // Take full height of the screen
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.centerLeft,
