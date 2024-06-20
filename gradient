@@ -7,65 +7,37 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: Scaffold(
-        body: Center(
-          child: Stack(
-            children: [
-              Positioned(
-                top: 50, // Adjust the top position
-                left: 0, // Adjust the left position
-                child: ClipPath(
-                  clipper: CustomClipPath(),
-                  child: Container(
-                    width: 301,
-                    height: 114.43,
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        stops: [0.1376, 0.5174, 0.8403, 1.1206],
-                        colors: [
-                          Color(0xFF09545E),
-                          Color(0xFF0C7785),
-                          Color(0x8309545E), // Using 0x83 for 0.517708 opacity
-                          Color(0x00054C66), // Using 0x00 for 0 opacity
-                        ],
-                        transform: GradientRotation(90.3 *
-                            (3.1415927 / 90)), // Convert degrees to radians
-                      ),
-                      borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(20),
-                          bottomRight: Radius.elliptical(120, 60)),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+        body: GradientBox(),
       ),
     );
   }
 }
 
-class CustomClipPath extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-    path.lineTo(0, 0); // Top left
-    path.lineTo(size.width - 20, -60); // Top right corner cut
-    path.lineTo(
-        size.width - 0, size.height - 40); // Bottom right corner cut part 1
-    path.lineTo(
-        size.width - 120, size.height); // Bottom right corner cut part 2
-    path.lineTo(0, size.height); // Bottom left
-    path.close();
-    return path;
-  }
+class GradientBox extends StatelessWidget {
+  const GradientBox({Key? key}) : super(key: key);
 
   @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
-    return false;
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        width: 100, // Set your preferred width
+        height: 800, // Set your preferred height
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [
+              Color.fromRGBO(9, 84, 94, 0.517708), // First color with opacity
+              Color(0xFF0C7785), // Second color
+              Color(0xFF09545E), // Third color
+            ],
+            transform: GradientRotation(90.3 * (3.1415927 / 90)),
+            stops: [0.0, 0.7103, 1.1206], // Adjust stops based on your gradient
+          ),
+        ),
+      ),
+    );
   }
 }
