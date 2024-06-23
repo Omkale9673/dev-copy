@@ -1,0 +1,35 @@
+import 'package:bike/animation_page.dart';
+import 'package:bike/support.dart';
+import 'package:flutter/material.dart';
+import 'package:bike/editprofile_page.dart';
+import 'package:bike/menu_page.dart';
+import 'package:bike/login_page.dart';
+import 'package:bike/profile_page.dart';
+import 'package:bike/home_page.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Your App Title',
+      theme: ThemeData(),
+      initialRoute: '/home_page',
+      debugShowCheckedModeBanner: false,
+      routes: {
+        '/login_page': (context) => const LoginPage(),
+        '/menu_page': (context) => const MenuPage(),
+        '/home_page': (context) => const MyHome(),
+        '/profile_page': (context) => const ProfilePage(),
+        '/support_page': (context) => const SupportPage(),
+        '/editprofile_page': (context) => const EditProfilePage(),
+        '/animation_page': (context) => const AnimatedSVGDemo(),
+      },
+    );
+  }
+}
