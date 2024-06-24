@@ -1,0 +1,101 @@
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http; // For making HTTP requests
+
+// Define a model class for your JSON structure
+class ApiData {
+  final String name;
+  final String method;
+  final String url;
+  final List<Map<String, String>> queryParameters;
+  final String responseBody;
+
+  ApiData({
+    required this.name,
+    required this.method,
+    required this.url,
+    required this.queryParameters,
+    required this.responseBody,
+  });
+
+  factory ApiData.fromJson(Map<String, dynamic> json) {
+    // Parse the JSON data into Dart objects
+    return ApiData(
+      name: json['name'],
+      method: json['request']['method'],
+      url: json['request']['url']['raw'],
+      queryParameters: List<Map<String, String>>.from(
+          json['request']['url']['query']
+              .map((queryParam) => {
+                    'key': queryParam['key'],
+                    'value': queryParam['value'],
+                  })),
+      responseBody: json['response'][0]['body'],
+    );
+  }
+}
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Fetch JSON Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: JsonScreen(),
+    );
+  }
+}
+
+class JsonScreen extends StatefulWidget {
+  @override
+  _JsonScreenState createState() => _JsonScreenState();
+}
+
+class _JsonScreenState extends State<JsonScreen> {
+  List<ApiData> apiDataList = [];
+
+  Future<void> fetchData() async {
+    final response = await http.get(Uri.parse(
+        'https://raw.githubusercontent.com/your_username/your_repo/master/data.json')); // Replace with your JSON file URL
+    if (response.statusCode == 200) {
+      // If the server returns a 200 OK response, parse the JSON
+      List<dynamic> jsonResponse = json.decode(response.body);
+      setState(() {
+        apiDataList = jsonResponse.map((data) => ApiData.fromJson(data)).toList();
+      });
+    } else {
+      throw Exception('Failed to load JSON data');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Fetch JSON Data'),
+      ),
+      body: ListView.builder(
+        itemCount: apiDataList.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(apiDataList[index].name),
+            subtitle: Text(apiDataList[index].url),
+            onTap: () {
+              // Implement what you want to do on tap of each item
+            },
+          );
+        },
+      ),
+    );
+  }
+}
