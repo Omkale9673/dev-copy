@@ -1,0 +1,67 @@
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'otp_verification_page.dart'; // Import the OTPVerificationPage
+
+class MobileOTPLoginPage extends StatefulWidget {
+  @override
+  _MobileOTPLoginPageState createState() => _MobileOTPLoginPageState();
+}
+
+class _MobileOTPLoginPageState extends State<MobileOTPLoginPage> {
+  TextEditingController mobileController = TextEditingController();
+  String apiUrl = 'http://34.93.202.185:5000/api/v1/mobile_otp_login';
+
+  void sendOTP() async {
+    String mobileNumber = mobileController.text;
+    var response = await http.post(Uri.parse(apiUrl),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"mobile_number": mobileNumber}));
+
+    if (response.statusCode == 200) {
+      // Handle success, navigate to OTP verification page
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => OTPVerificationPage(mobileNumber: mobileNumber),
+        ),
+      );
+    } else {
+      // Handle error
+      print("Failed to send OTP. Error: ${response.statusCode}");
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Mobile OTP Login'),
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextField(
+                controller: mobileController,
+                keyboardType: TextInputType.phone,
+                decoration: InputDecoration(
+                  hintText: 'Enter your mobile number',
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  sendOTP();
+                },
+                child: Text('Send OTP'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
