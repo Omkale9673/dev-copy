@@ -1,0 +1,70 @@
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+class OTPVerificationPage extends StatefulWidget {
+  final String mobileNumber;
+
+  OTPVerificationPage({required this.mobileNumber}); // Ensure mobileNumber is required
+
+  @override
+  _OTPVerificationPageState createState() => _OTPVerificationPageState();
+}
+
+class _OTPVerificationPageState extends State<OTPVerificationPage> {
+  TextEditingController otpController = TextEditingController();
+  String apiUrl = 'http://34.93.202.185:5000/login';
+
+  void verifyOTP() async {
+    String otpCode = otpController.text;
+    var response = await http.post(Uri.parse(apiUrl),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "mobile_number": widget.mobileNumber,
+          "otp_code": otpCode,
+        }));
+
+    if (response.statusCode == 200) {
+      // Handle successful login, navigate to home or dashboard page
+      print("Login successful!");
+    } else {
+      // Handle error
+      print("Failed to login. Error: ${response.statusCode}");
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('OTP Verification'),
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Enter OTP sent to ${widget.mobileNumber}'),
+              SizedBox(height: 20),
+              TextField(
+                controller: otpController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: 'Enter OTP',
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  verifyOTP();
+                },
+                child: Text('Verify OTP'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
