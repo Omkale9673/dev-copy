@@ -1,0 +1,29 @@
+import 'package:flutter/material.dart';
+
+class DashPrintPage extends StatelessWidget {
+  final Map<String, dynamic> dashboardData;
+
+  DashPrintPage({required this.dashboardData});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Dashboard Print'),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text('Battery Charge Status: ${dashboardData['data'][0]['battery_charge_status']}'),
+            Text('Battery Percentage: ${dashboardData['data'][0]['battery_percentage']}'),
+                        Text('Total Km: ${dashboardData['data'][0]['total_kms ']}'),
+
+            // Add more fields as needed from the dashboardData
+          ],
+        ),
+      ),
+    );
+  }
+}
