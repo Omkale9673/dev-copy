@@ -1,0 +1,101 @@
+import 'package:flutter/material.dart';
+
+class Myhome extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        double size = constraints.maxWidth * 0.5;
+
+        return Stack(
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                width: 100,
+                height: MediaQuery.of(context).size.height,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      Color.fromRGBO(9, 84, 94, 0.517708),
+                      Color(0xFF0C7785),
+                      Color(0xFF09545E),
+                    ],
+                    transform: GradientRotation(90.3 * (3.1415927 / 90)),
+                    stops: [0.0, 0.7103, 1.1206],
+                  ),
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Transform.rotate(
+                angle: 45 * (3.1415927 / 180),
+                child: Container(
+                  width: size * 0.83,
+                  height: size * 0.83,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      transform: GradientRotation(86.62 * (3.1415927 / 90)),
+                      stops: [0.2505, 0.7943, 1.2565, 1.658],
+                      colors: [
+                        Color(0xFF09545E),
+                        Color(0xFF0C7785),
+                        Color.fromRGBO(9, 84, 94, 0.517708),
+                        Colors.transparent,
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(size * 0.175),
+                  ),
+                  child: Center(
+                    child: Transform.rotate(
+                      angle: -90 * (3.1415927 / 180),
+                      child: Container(
+                        width: size * 0.7,
+                        height: size * 0.7,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(size * 0.125),
+                        ),
+                        child: Center(
+                          child: Transform.rotate(
+                            angle: 90 * (3.1415927 / 90),
+                            child: Container(
+                              width: size * 0.6,
+                              height: size * 0.6,
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                  transform:
+                                      GradientRotation(90.3 * (3.1415927 / 90)),
+                                  stops: [0.1376, 0.5174, 0.8403, 1.1206],
+                                  colors: [
+                                    Color(0xFF09545E),
+                                    Color(0xFF0C7785),
+                                    Color.fromRGBO(9, 84, 94, 0.517708),
+                                    Colors.transparent,
+                                  ],
+                                ),
+                                borderRadius:
+                                    BorderRadius.circular(size * 0.125),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
