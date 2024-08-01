@@ -1,0 +1,136 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+
+class DocumentPage extends StatefulWidget {
+  final String vehicleId;
+  final String sessionId;
+
+  DocumentPage({required this.vehicleId, required this.sessionId});
+
+  @override
+  _DocumentPageState createState() => _DocumentPageState();
+}
+
+class _DocumentPageState extends State<DocumentPage> {
+  File? _adharCardFile;
+  File? _panCardFile;
+  String? _adharCardImageUrl;
+  String? _panCardImageUrl;
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImage(String documentType) async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        if (documentType == 'Adhar Card') {
+          _adharCardFile = File(pickedFile.path);
+        } else if (documentType == 'PAN Card') {
+          _panCardFile = File(pickedFile.path);
+        }
+      });
+    }
+  }
+
+  Future<void> _uploadDocument(String documentName, File? file) async {
+    if (file == null) return;
+
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse('http://34.93.202.185:5000/api/v1/add_user_documents'),
+    );
+
+    request.fields['data'] = json.encode({
+      'vehicle_id': widget.vehicleId,
+      'document_name': documentName,
+      'session': widget.sessionId,
+    });
+
+    request.files.add(
+      await http.MultipartFile.fromPath('file', file.path),
+    );
+
+    final response = await request.send();
+    final responseBody = await response.stream.bytesToString();
+
+    print('Upload response for $documentName: $responseBody');
+  }
+
+  Future<void> _fetchDocument(String documentName) async {
+    final response = await http.get(
+      Uri.parse(
+        'http://34.93.202.185:5000/get_document?vehicle_id=${widget.vehicleId}&session=${widget.sessionId}&user_document_name=$documentName',
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      setState(() {
+        if (documentName == 'Adhar Card') {
+          _adharCardImageUrl = 'data:image/jpeg;base64,' + base64Encode(response.bodyBytes);
+        } else if (documentName == 'PAN Card') {
+          _panCardImageUrl = 'data:image/jpeg;base64,' + base64Encode(response.bodyBytes);
+        }
+      });
+    } else {
+      print('Failed to fetch document for $documentName');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Document Page')),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            _buildDocumentSection('Adhar Card', _adharCardFile, _adharCardImageUrl),
+            _buildDocumentSection('PAN Card', _panCardFile, _panCardImageUrl),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDocumentSection(String documentName, File? file, String? imageUrl) {
+    return Container(
+      padding: EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            documentName,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 8),
+          GestureDetector(
+            onTap: () => _pickImage(documentName),
+            child: Container(
+              width: 100,
+              height: 100,
+              color: Colors.grey[300],
+              child: file != null
+                  ? Image.file(file)
+                  : Center(child: Text('Tap to pick image')),
+            ),
+          ),
+          SizedBox(height: 8),
+          ElevatedButton(
+            onPressed: () => _uploadDocument(documentName, file),
+            child: Text('Upload'),
+          ),
+          SizedBox(height: 8),
+          ElevatedButton(
+            onPressed: () => _fetchDocument(documentName),
+            child: Text('Fetch Image'),
+          ),
+          SizedBox(height: 8),
+          imageUrl != null
+              ? Image.memory(base64Decode(imageUrl.split(',').last))
+              : Container(),
+        ],
+      ),
+    );
+  }
+}
