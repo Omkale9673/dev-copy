@@ -1,0 +1,73 @@
+import 'package:flutter/material.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
+class NotificationPage extends StatefulWidget {
+  const NotificationPage({Key? key}) : super(key: key);
+
+  @override
+  _NotificationPageState createState() => _NotificationPageState();
+}
+
+class _NotificationPageState extends State<NotificationPage> {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  final List<String> _notifications = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _setupFirebaseMessaging();
+  }
+
+  void _setupFirebaseMessaging() {
+    // Request notification permissions
+    _firebaseMessaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    // Get the Firebase token for this device
+    _firebaseMessaging.getToken().then((String? token) {
+      print("Firebase Messaging Token: $token");
+    });
+
+    // Handle foreground messages
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("Received a message in the foreground!");
+
+      if (message.notification != null) {
+        String? title = message.notification!.title;
+        String? body = message.notification!.body;
+
+        if (title != null && body != null) {
+          print('Notification title: $title');
+          print('Notification body: $body');
+
+          // Safely update UI
+          setState(() {
+            _notifications.add("$title: $body");
+          });
+        }
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Notifications'),
+      ),
+      body: _notifications.isEmpty
+          ? const Center(child: Text('No notifications yet.'))
+          : ListView.builder(
+              itemCount: _notifications.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(_notifications[index]),
+                );
+              },
+            ),
+    );
+  }
+}
